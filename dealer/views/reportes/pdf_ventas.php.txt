@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reporte de Ventas — Dealer System</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=DM+Sans:wght@300;400;500&display=swap');
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: #fff;
+            color: #1a1a2e;
+            font-size: 13px;
+        }
+
+        .page {
+            width: 210mm;
+            min-height: 297mm;
+            margin: 0 auto;
+            padding: 12mm 14mm;
+            background: #fff;
+        }
+
+        /* ── Header ── */
+        .report-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 12px;
+            border-bottom: 3px solid #e8a020;
+            margin-bottom: 20px;
+        }
+
+        .report-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-circle {
+            width: 44px; height: 44px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #e8a020, #c4841a);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.3rem;
+            color: #fff;
+        }
+
+        .logo-text h1 {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #1a1a2e;
+            line-height: 1;
+        }
+        .logo-text p {
+            font-size: .65rem;
+            color: #888;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+        }
+
+        .report-meta {
+            text-align: right;
+            font-size: .75rem;
+            color: #666;
+            line-height: 1.6;
+        }
+        .report-meta strong { color: #1a1a2e; }
+
+        /* ── Título del reporte ── */
+        .report-title-section {
+            background: linear-gradient(135deg, #1a1a2e, #2d3561);
+            color: #fff;
+            border-radius: 10px;
+            padding: 14px 18px;
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .report-title-section h2 {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            letter-spacing: .05em;
+        }
+
+        .report-title-section .gold-tag {
+            background: #e8a020;
+            color: #1a1a2e;
+            font-size: .7rem;
+            font-weight: 700;
+            padding: .2rem .6rem;
+            border-radius: 20px;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+        }
+
+        /* ── Resumen KPIs ── */
+        .kpi-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 18px;
+        }
+
+        .kpi-box {
+            border: 1px solid #e8e8f0;
+            border-radius: 8px;
+            padding: 10px 14px;
+            text-align: center;
+        }
+
+        .kpi-box .kpi-num {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #e8a020;
+            line-height: 1;
+        }
+
+        .kpi-box .kpi-lbl {
+            font-size: .68rem;
+            color: #888;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            margin-top: 2px;
+        }
+
+        /* ── Tabla ── */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        thead tr {
+            background: #1a1a2e;
+            color: #fff;
+        }
+
+        thead th {
+            padding: 9px 10px;
+            text-align: left;
+            font-size: .72rem;
+            font-weight: 500;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid #f0f0f5;
+            transition: background .2s;
+        }
+
+        tbody tr:nth-child(even) {
+            background: #f8f8fc;
+        }
+
+        tbody td {
+            padding: 8px 10px;
+            font-size: .82rem;
+            color: #333;
+            vertical-align: middle;
+        }
+
+        .td-gold {
+            color: #c4841a;
+            font-weight: 600;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-size: .68rem;
+            font-weight: 500;
+        }
+        .badge-green { background: #dcfce7; color: #166534; }
+        .badge-red   { background: #fee2e2; color: #991b1b; }
+        .badge-amber { background: #fef3c7; color: #92400e; }
+
+        /* ── Total row ── */
+        .total-row {
+            background: #1a1a2e !important;
+            color: #fff;
+        }
+        .total-row td {
+            color: #fff !important;
+            font-weight: 600;
+            padding: 10px 10px;
+        }
+        .total-row .td-gold {
+            color: #e8a020 !important;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1rem;
+        }
+
+        /* ── Footer ── */
+        .report-footer {
+            border-top: 2px solid #e8a020;
+            padding-top: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: .7rem;
+            color: #999;
+        }
+
+        .report-footer strong { color: #e8a020; }
+
+        /* ── Botones (no imprimen) ── */
+        .no-print {
+            position: fixed;
+            top: 20px; right: 20px;
+            display: flex; gap: 10px;
+            z-index: 100;
+        }
+
+        .btn-print {
+            display: flex; align-items: center; gap: 6px;
+            padding: 10px 18px;
+            border: none; border-radius: 8px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: .85rem; font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all .2s;
+        }
+
+        .btn-print-primary {
+            background: #e8a020; color: #1a1a2e;
+            box-shadow: 0 4px 14px rgba(232,160,32,.4);
+        }
+        .btn-print-primary:hover { background: #c4841a; transform: translateY(-1px); }
+
+        .btn-print-secondary {
+            background: #1a1a2e; color: #fff;
+            box-shadow: 0 4px 14px rgba(0,0,0,.2);
+        }
+        .btn-print-secondary:hover { background: #2d3561; transform: translateY(-1px); }
+
+        @media print {
+            .no-print { display: none !important; }
+            body { background: #fff; }
+            .page { padding: 8mm 10mm; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Botones de acción (no se imprimen) -->
+<div class="no-print">
+    <a href="index.php?controller=reporte&action=csvVentas" class="btn-print btn-print-secondary">
+        ⬇ Exportar CSV
+    </a>
+    <button onclick="window.print()" class="btn-print btn-print-primary">
+        🖨 Imprimir / Guardar PDF
+    </button>
+</div>
+
+<div class="page">
+
+    <!-- Header -->
+    <div class="report-header">
+        <div class="report-logo">
+            <div class="logo-circle">🚗</div>
+            <div class="logo-text">
+                <h1>Dealer System</h1>
+                <p>Gestión vehicular avanzada</p>
+            </div>
+        </div>
+        <div class="report-meta">
+            <strong>Reporte generado:</strong><br>
+            <?= date('d/m/Y') ?> a las <?= date('H:i') ?><br>
+            <strong>Sistema:</strong> Dealer System v1.0
+        </div>
+    </div>
+
+    <!-- Título -->
+    <div class="report-title-section">
+        <h2>📋 Reporte de Ventas</h2>
+        <span class="gold-tag">Período: <?= date('Y') ?></span>
+    </div>
+
+    <?php
+        $ventas       = is_array($ventas) ? $ventas : [];
+        $totalVentas  = count($ventas);
+        $sumaTotal    = $totalVentas > 0 ? array_sum(array_column($ventas, 'total')) : 0;
+        $promedio     = $totalVentas > 0 ? $sumaTotal / $totalVentas : 0;
+    ?>
+
+    <!-- KPIs -->
+    <div class="kpi-row">
+        <div class="kpi-box">
+            <p class="kpi-num"><?= $totalVentas ?></p>
+            <p class="kpi-lbl">Total ventas</p>
+        </div>
+        <div class="kpi-box">
+            <p class="kpi-num">$<?= number_format($sumaTotal, 2, '.', ',') ?></p>
+            <p class="kpi-lbl">Ingresos totales</p>
+        </div>
+        <div class="kpi-box">
+            <p class="kpi-num">$<?= number_format($promedio, 2, '.', ',') ?></p>
+            <p class="kpi-lbl">Promedio por venta</p>
+        </div>
+    </div>
+
+    <!-- Tabla -->
+    <table>
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Cliente</th>
+                <th>Cédula</th>
+                <th>Vehículo</th>
+                <th>Año</th>
+                <th>Total</th>
+                <th>Fecha</th>
+            </tr>
+        </thead>
+        <tbody>
+        <?php if (!empty($ventas)): ?>
+            <?php foreach ($ventas as $i => $v): ?>
+            <tr>
+                <td><?= $i + 1 ?></td>
+                <td><strong><?= htmlspecialchars($v['cliente_nombre'] ?? '—') ?></strong></td>
+                <td><?= htmlspecialchars($v['cliente_cedula'] ?? '—') ?></td>
+                <td><?= htmlspecialchars(($v['vehiculo_marca'] ?? '') . ' ' . ($v['vehiculo_modelo'] ?? '')) ?></td>
+                <td><?= htmlspecialchars($v['vehiculo_anio'] ?? '—') ?></td>
+                <td class="td-gold">$<?= number_format($v['total'], 2, '.', ',') ?></td>
+                <td><?= date('d/m/Y', strtotime($v['fecha'])) ?></td>
+            </tr>
+            <?php endforeach; ?>
+            <!-- Fila total -->
+            <tr class="total-row">
+                <td colspan="5"><strong>TOTAL GENERAL</strong></td>
+                <td class="td-gold">$<?= number_format($sumaTotal, 2, '.', ',') ?></td>
+                <td><?= $totalVentas ?> ventas</td>
+            </tr>
+        <?php else: ?>
+            <tr>
+                <td colspan="7" style="text-align:center;padding:20px;color:#999;">
+                    No hay ventas registradas
+                </td>
+            </tr>
+        <?php endif; ?>
+        </tbody>
+    </table>
+
+    <!-- Footer -->
+    <div class="report-footer">
+        <span>© <?= date('Y') ?> <strong>Dealer System</strong> — Todos los derechos reservados</span>
+        <span>Página 1 de 1</span>
+        <span>Generado el <?= date('d/m/Y H:i') ?></span>
+    </div>
+
+</div>
+
+</body>
+</html>
